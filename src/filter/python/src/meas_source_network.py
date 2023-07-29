@@ -37,12 +37,7 @@ class MeasSourceNetwork:
         logging.info("Model {} loaded to device {}.".format(model_path, self.device))
 
     def get_displacement_measurement(self, net_t_s, net_gyr_w, net_acc_w):
-<<<<<<< HEAD
         meas, meas_cov = self.get_displacement_measurement_model_net(net_t_s, net_gyr_w, net_acc_w)
-=======
-        meas, meas_cov = self.get_displacement_measurement_model_net(
-            net_t_s, net_gyr_w, net_acc_w)
->>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
         return meas, meas_cov
 
     def get_displacement_measurement_model_net(self, net_t_s, net_gyr_w, net_thr_w):

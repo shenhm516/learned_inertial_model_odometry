@@ -83,11 +83,7 @@ class ModelSequence(CompiledSequence):
         self.ts = ts
         self.gyro_raw = gyro_raw
         self.thrust = thrust
-<<<<<<< HEAD
         self.feat = np.concatenate([w_gyro_calib, w_thrust], axis=1) #shm: For training, the angle velocity and thrust are already transformed to the world frame
-=======
-        self.feat = np.concatenate([w_gyro_calib, w_thrust], axis=1)
->>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
         self.traj_target = traj_target
 
     def get_feature(self):
