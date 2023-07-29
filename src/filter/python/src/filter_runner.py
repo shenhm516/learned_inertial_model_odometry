@@ -132,7 +132,11 @@ class FilterRunner:
         # Rs_net will contains delta rotation since t_begin_us
         Rs_bofbi = np.zeros((net_t_us.shape[0], 3, 3))  # N x 3 x 3
         Rs_bofbi[0, :, :] = np.eye(3)
+<<<<<<< HEAD
         for j in range(1, net_t_us.shape[0]):       #shm: predect rotation matrix through angule velocity integration
+=======
+        for j in range(1, net_t_us.shape[0]):
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
             dt_us = net_t_us[j] - net_t_us[j - 1]
             dt = from_usec_to_sec(dt_us)
             dR = mat_exp(net_gyr[j, :].reshape((3, 1)) * dt)
@@ -147,8 +151,13 @@ class FilterRunner:
             R_oldest_state_wfb @ Rs_bofbi[oldest_state_idx_in_net, :, :].T
         )  # [3 x 3]
         Rs_net_wfb = np.einsum("ip,tpj->tij", R_bofboldstate, Rs_bofbi)
+<<<<<<< HEAD
         net_fn_w = np.einsum("tij,tj->ti", Rs_net_wfb, net_fn)  # N x 3 shm: transform thrust into world frame
         net_gyr_w = np.einsum("tij,tj->ti", Rs_net_wfb, net_gyr)  # N x 3 shm: transform anglue velocity into world frame
+=======
+        net_fn_w = np.einsum("tij,tj->ti", Rs_net_wfb, net_fn)  # N x 3
+        net_gyr_w = np.einsum("tij,tj->ti", Rs_net_wfb, net_gyr)  # N x 3
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
         net_t_s = from_usec_to_sec(net_t_us)
 
         return net_gyr_w, net_fn_w, net_t_s
@@ -257,8 +266,15 @@ class FilterRunner:
         assert t_begin_us <= t_oldest_state_us
 
         # get measurement from network
+<<<<<<< HEAD
         net_gyr_w, net_fn_w, net_t_s = self._get_inputs_samples_for_network(t_begin_us, t_oldest_state_us, t_end_us)
         meas, meas_cov = self.meas_source.get_displacement_measurement(net_t_s, net_gyr_w, net_fn_w) #shm: calaculate dp through TCN with the input of anglue velocity (in world frame) and thrust (in world frame)
+=======
+        net_gyr_w, net_fn_w, net_t_s = self._get_inputs_samples_for_network(
+            t_begin_us, t_oldest_state_us, t_end_us)
+        meas, meas_cov = self.meas_source.get_displacement_measurement(
+            net_t_s, net_gyr_w, net_fn_w)
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
 
         # filter update
         is_available, innovation, jac, noise_mat = \

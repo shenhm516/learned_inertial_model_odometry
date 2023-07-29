@@ -93,14 +93,22 @@ def run_train(learn_configs, network, train_loader, device, optimizer):
         # dims = [batch size, 6, window size]
         # targ = [dp]
         # dims = [batch size, 3]
+<<<<<<< HEAD
         feat = feat.to(device) #shm: cope feat to device (GPU)
+=======
+        feat = feat.to(device)
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
         v_init = v_init.to(device)
         targ = targ.to(device)
 
         optimizer.zero_grad()
 
         # get network prediction
+<<<<<<< HEAD
         dp = network(feat) #shm: Input of network includes feat_gyros and feat_thrusts. Output of the network is dp. 
+=======
+        dp = network(feat)
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
 
         # compute loss
         errs, loss = get_error_and_loss(dp, targ, learn_configs, device)
@@ -215,7 +223,13 @@ def train(args):
     )    
     input_dim = args.input_dim
     output_dim = args.output_dim
+<<<<<<< HEAD
     network = get_model(input_dim, output_dim).to(device) #shm: define a TCN network
+=======
+    network = get_model(input_dim, output_dim).to(
+        device
+    )
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
         
     n_params = network.get_num_params()
     params = network.parameters()
@@ -227,8 +241,15 @@ def train(args):
     start_t = time.time()
     train_list = get_datalist(os.path.join(args.root_dir, args.dataset, args.train_list))
     try:
+<<<<<<< HEAD
         train_dataset = ModelDataset(args.root_dir, args.dataset, train_list, args, data_window_config, mode="train")
         train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True) #, num_workers=16)
+=======
+        train_dataset = ModelDataset(
+            args.root_dir, args.dataset, train_list, args, data_window_config, mode="train")
+        train_loader = DataLoader(
+            train_dataset, batch_size=args.batch_size, shuffle=True) #, num_workers=16)
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
     except OSError as e:
         logging.error(e)
         return
@@ -242,8 +263,15 @@ def train(args):
         run_validation = True
         val_list = get_datalist(os.path.join(args.root_dir, args.dataset, args.val_list))
 
+<<<<<<< HEAD
     optimizer = torch.optim.Adam(params, args.lr) #shm: 定义优化器
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.1, patience=10, verbose=True, eps=1e-12) #shm: 定义学习率调度器
+=======
+    optimizer = torch.optim.Adam(params, args.lr)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, factor=0.1, patience=10, verbose=True, eps=1e-12
+    )
+>>>>>>> 580ea06440bf59badc9c941b61a71cdf173d9131
     logging.info(f"Optimizer: {optimizer}, Scheduler: {scheduler}")
 
     start_epoch = 0
