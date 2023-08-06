@@ -169,7 +169,7 @@ def test(args):
     )
     model_path = os.path.join(args.out_dir, args.dataset, "checkpoints", "model_net", args.model_fn)
     checkpoint = torch.load(model_path, map_location=device)
-
+    # print(model_path)
     input_dim = args.input_dim
     output_dim = args.output_dim
     network = get_model(input_dim, output_dim).to(device)

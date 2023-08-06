@@ -69,6 +69,7 @@ class ModelSequence(CompiledSequence):
             ts = np.copy(f["ts"])
             gyro_raw = np.copy(f["gyro_raw"])
             gyro_calib = np.copy(f["gyro_calib"])
+            acc_calib = np.copy(f["accel_calib"])
             thrust = np.copy(f["thrust"])
             i_thrust = np.copy(f["i_thrust"])  # in imu frame
             traj_target = np.copy(f["traj_target"])
@@ -78,12 +79,13 @@ class ModelSequence(CompiledSequence):
 
         # rotate to world frame
         w_gyro_calib = np.array([pose.xyzwQuatToMat(T_wi[3:]) @ w_i for T_wi, w_i in zip(traj_target, gyro_calib)])
+        w_acc_calib = np.array([pose.xyzwQuatToMat(T_wi[3:]) @ a_i for T_wi, a_i in zip(traj_target, acc_calib)])
         w_thrust = np.array([pose.xyzwQuatToMat(T_wi[3:]) @ t_i for T_wi, t_i in zip(traj_target, i_thrust)])
 
         self.ts = ts
         self.gyro_raw = gyro_raw
         self.thrust = thrust
-        self.feat = np.concatenate([w_gyro_calib, w_thrust], axis=1) #shm: For training, the angle velocity and thrust are already transformed to the world frame
+        self.feat = np.concatenate([w_gyro_calib, w_thrust, w_acc_calib], axis=1) #shm: The angle velocity, acceleration, and thrust are already transformed to the world frame
         self.traj_target = traj_target
 
     def get_feature(self):
@@ -130,7 +132,7 @@ class ModelDataset(Dataset):
         self.thrusts = []
         for i in range(len(data_list)):
             seq = ModelSequence(root_dir, dataset_fn, data_list[i], **kwargs)
-            # feat = np.array([[wx, wy, wz, thrx, thry, thrz], ...])
+            # feat = np.array([[wx, wy, wz, ax, ay, az, thrx, thry, thrz], ...])
             # targ = np.array([[x, y, z, qx, qy, qz, qw], ...])
             feat = seq.get_feature()
             targ = seq.get_target()
@@ -151,7 +153,7 @@ class ModelDataset(Dataset):
             if self.mode == "test":
                 self.raw_gyro_meas.append(raw_gyro_meas)
                 self.thrusts.append(thrusts)
-                
+ 
         if self.shuffle:
             random.shuffle(self.index_map)
 
@@ -198,10 +200,18 @@ class ModelDataset(Dataset):
                     (random.random() - 0.5) * self.gyro_bias_perturbation_range / 0.5,
                     (random.random() - 0.5) * self.gyro_bias_perturbation_range / 0.5,
                     (random.random() - 0.5) * self.gyro_bias_perturbation_range / 0.5,
+                    (random.random() - 0.5) * self.acc_bias_perturbation_range / 0.5,
+                    (random.random() - 0.5) * self.acc_bias_perturbation_range / 0.5,
+                    (random.random() - 0.5) * self.acc_bias_perturbation_range / 0.5,
                 ]
+                #shm: add pertrub on angular velocity
                 feat[:, 0] = feat[:, 0] + random_bias[0]
                 feat[:, 1] = feat[:, 1] + random_bias[1]
                 feat[:, 2] = feat[:, 2] + random_bias[2]
+                #shm: add pertrub on acc
+                feat[:, 6] = feat[:, 6] + random_bias[3]
+                feat[:, 7] = feat[:, 7] + random_bias[4]
+                feat[:, 8] = feat[:, 8] + random_bias[5]
 
             if self.perturb_orientation:
                 vec_rand = np.array([np.random.normal(), np.random.normal(), np.random.normal()])
@@ -212,10 +222,11 @@ class ModelDataset(Dataset):
                 # theta_deg = np.random.normal(self.perturb_orientation_mean, self.perturb_orientation_std)
                 # theta_rand = theta_deg * np.pi / 180.0
 
-                R_mat = pose.fromAngleAxisToRotMat(theta_rand, vec_rand)
+                R_mat = pose.fromAngleAxisToRotMat(theta_rand, vec_rand) #shm: a random perturb rotation matrix
 
                 feat[:, 0:3] = np.matmul(R_mat, feat[:, 0:3].T).T
                 feat[:, 3:6] = np.matmul(R_mat, feat[:, 3:6].T).T
+                feat[:, 6:9] = np.matmul(R_mat, feat[:, 6:9].T).T
 
             # perturb initial velocity
             if self.perturb_init_vel:

@@ -32,7 +32,7 @@ class MeasSourceNetwork:
             self.device = torch.device("cuda:0")
             checkpoint = torch.load(model_path)
 
-        self.net.load_state_dict(checkpoint["model_state_dict"])
+        self.net.load_state_dict(checkpoint["model_state_dict"]) #shm: load parameters to the network
         self.net.eval().to(self.device)
         logging.info("Model {} loaded to device {}.".format(model_path, self.device))
 

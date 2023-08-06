@@ -37,7 +37,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--epochs", type=int, default=1000, help="max num epochs")
     parser.add_argument("--cpu", action="store_true")
-    parser.add_argument("--input_dim", type=int, default=6)
+    parser.add_argument("--input_dim", type=int, default=9)
     parser.add_argument("--output_dim", type=int, default=3)
     parser.add_argument("--weight_vel_err", type=float, default=1.)
     parser.add_argument("--weight_pos_err", type=float, default=1.)
@@ -58,6 +58,7 @@ if __name__ == "__main__":
     )  # degrees
     add_bool_arg(parser, "perturb_bias", default=False)
     parser.add_argument("--gyro_bias_perturbation_range", type=float, default=0.01)
+    parser.add_argument("--acc_bias_perturbation_range", type=float, default=0.02)
     add_bool_arg(parser, "perturb_init_vel", default=True)
     parser.add_argument("--init_vel_sigma", type=float, default=0.3)
 

@@ -69,12 +69,15 @@ def prepare_dataset(args):
 
     # read seq names
     seq_names = []
+    # print(os.path.join(dataset_dir, args.data_list))
     seq_names.append(utils.get_datalist(os.path.join(dataset_dir, args.data_list)))
     seq_names = [item for sublist in seq_names for item in sublist]
 
     for idx, seq_name in enumerate(seq_names):
-        base_seq_name = os.path.dirname(os.path.dirname(seq_name))
+        base_seq_name = os.path.dirname(os.path.dirname(seq_name)) #shm: cd ../..
         data_dir = os.path.join(dataset_dir, base_seq_name)
+        # print(data_dir)
+        # print(base_seq_name)
         assert os.path.isdir(data_dir), '%s' % data_dir
         rosbag_fn = os.path.join(data_dir, 'rosbag.bag')
 

@@ -41,6 +41,9 @@ An sample output for one of the trajectories used from the Blackbird dataset is 
 
 You can use this script as reference to convert your own dataset.
 
+For example:
+```python src/main_learning.py --root_dir=datasets --out_dir=results --dataset=Blackbird --mode=test --imu_freq=100 --sampling_freq=100 --window_time=0.5 --model_fn=checkpoint_592.pt --show_plots```
+
 ## Learning Component
 
 Run network training with:
@@ -57,7 +60,7 @@ The training logs can be visualized in tensorboard:
 
 ```tensorboard --logdir=results/Blackbird/logs```
 
-We provide the network trained on the selected trajectories from the Blackbird dataset (see paper for details) in ```results/Blackbird/checkpoints/model_net/net_blackbird.py```.
+We provide the network trained on the selected trajectories from the Blackbird dataset (see paper for details) in ```results/Blackbird/checkpoints/model_net/net_blackbird.pt (if you want to ues the net model trained by yourself, you should use checkpoint_xxx.pt)```.
 
 ## Learned Inertial Odometry
 

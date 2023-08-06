@@ -1,2 +1,4 @@
 # clover
 clover/yawForward/maxSpeed5p0/train
+# egg
+egg/yawForward/maxSpeed8p0/train

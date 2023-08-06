@@ -8,7 +8,7 @@ This file is subject to the terms and conditions defined in the file
 
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 def xyPlot(title, labelx, labely, 
     vec1, label1, 
@@ -122,6 +122,13 @@ def make_position_plots(traj, gt):
     plt.figure('XYZt view')
     xyztPlot('XYZt', traj[:,:4], 'estim. traj', gt[:,:4], 'gt')
 
+    # print(gt.shape)
+    error = np.concatenate((traj[:,0].reshape(-1,1), traj[:,1:4]-gt[:,1:4]), axis=1)
+
+    # # error[:,0] = traj[:,0]
+    # # error[:,1:4] = traj[:,1:4]-gt[:,1:4]
+    plt.figure('XYZt error view')
+    xyztPlot('XYZt', error[:,:4], 'estim. traj')
 
 def make_velocity_plots(est_vel, gt_vel):
     plt.figure("Velocity")
